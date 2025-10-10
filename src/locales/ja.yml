@@ -1,3 +1,5 @@
+name: YouTube Comment Block
+description: 動画とショート動画の該当コメントを非表示にします
 format:
   date: YY/MM/DD
   time: HH:mm:ss

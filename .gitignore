@@ -22,7 +22,6 @@ web-ext.config.ts
 
 # Editor directories and files
 .vscode/*
-!.vscode/extensions.json
 .idea
 .DS_Store
 *.suo
@@ -30,3 +29,6 @@ web-ext.config.ts
 *.njsproj
 *.sln
 *.sw?
+
+!.vscode/settings.example.json
+!.vscode/extensions.json

@@ -1,3 +1,5 @@
+name: YouTube Comment Block
+description: block comment for Videos/Shorts
 format:
   date: MM/DD/YY
   time: HH:mm:ss
