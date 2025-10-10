@@ -3,10 +3,10 @@ name: Release to Chrome Web Store
 on:
   push:
     branches:
-      - 'test/fix-workflow-import-env'
+      - "test/fix-workflow-import-env"
     tags:
-      - 'v[0-9]+.[0-9]+.0'  # minor以上のアップデートをトリガーにする
-  workflow_dispatch:   # 👈 手動実行を許可
+      - "v[0-9]+.[0-9]+.0" # minor以上のアップデートをトリガーにする
+  workflow_dispatch: # 手動実行を許可
 
 jobs:
   release:
@@ -14,7 +14,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -29,31 +29,18 @@ jobs:
       - name: Install dependencies
         run: pnpm install --prod --no-frozen-lockfile
 
-      - name: Load npm package metadata
-        run: |
-          echo "PACKAGE_NAME=$(jq -r .name package.json)" >> $GITHUB_ENV
-          echo "PACKAGE_VERSION=$(jq -r .version package.json)" >> $GITHUB_ENV
-
-      - name: Create .env
-        run: echo "${{ secrets.ENV }}" > .env
-
       - name: Create .env.submit
         run: echo "${{ secrets.ENV_SUBMIT }}" > .env.submit
 
-      - name: Run build step
-        run: pnpm build
-
-      - name: Run zip step
+      - name: Build and Zip
         run: pnpm zip
 
-      - name: Upload build artifact
+      - name: Upload Artifacts
         uses: actions/upload-artifact@v4
-        env:
-          PACKAGE_NAME: ${{ env.PACKAGE_NAME }}
-          PACKAGE_VERSION: ${{ env.PACKAGE_VERSION }}
         with:
-          # name: download-zip # 保存ファイル名を指定する場合、拡張子不要
-          path: .output/${{ env.PACKAGE_NAME }}-${{ env.PACKAGE_VERSION }}-chrome.zip
+          path: .output/*.zip
+          if-no-files-found: error
+          include-hidden-files: true
 
       - name: Run dryrun-unix script
         run: pnpm dryrun-unix

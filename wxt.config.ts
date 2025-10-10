@@ -6,6 +6,9 @@ export default defineConfig({
   srcDir: 'src',
   // extensionApi: 'chrome',
   modules: ['@wxt-dev/i18n/module', '@wxt-dev/module-vue', '@wxt-dev/auto-icons'],
+  autoIcons: {
+    developmentIndicator: false,
+  },
 
   vite: () => {
     const isProd = process.env.NODE_ENV === 'production'
@@ -21,8 +24,8 @@ export default defineConfig({
 
   manifest: () => ({
     permissions: ['storage'],
-    name: process.env.NODE_ENV === 'production' ? import.meta.env.WXT_EXT_NAME : `(Dev)${import.meta.env.WXT_EXT_NAME}`,
-    description: import.meta.env.WXT_EXT_DESC,
+    name: '__MSG_name__',
+    description: '__MSG_description__',
     default_locale: 'en',
   }),
 })

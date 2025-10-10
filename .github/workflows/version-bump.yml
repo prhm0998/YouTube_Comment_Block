@@ -6,7 +6,7 @@ on:
       - main
 
 permissions:
-  contents: write  # リポジトリの内容に書き込み権限を付与
+  contents: write # リポジトリの内容に書き込み権限を付与
 
 jobs:
   bump-version:
@@ -14,7 +14,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -39,4 +39,4 @@ jobs:
           git commit -m "chore: bump patch version [skip ci]"
           git push origin main
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # トークンを使用してプッシュ
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # トークンを使用してプッシュ
