@@ -30,7 +30,7 @@ jobs:
         run: pnpm install --prod --no-frozen-lockfile
 
       - name: Create .env.submit
-        run: echo "${{ secrets.ENV_SUBMIT }}" > .env.submit
+        run: echo "${{ secrets._ENV_SUBMIT }}" > .env.submit
 
       - name: Build and Zip
         run: pnpm zip
