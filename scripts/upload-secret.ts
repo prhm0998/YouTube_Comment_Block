@@ -5,13 +5,33 @@ import sodium from 'libsodium-wrappers'
 
 dotenv.config()
 
-const { GITHUB_TOKEN, GITHUB_OWNER, GITHUB_REPO } = process.env
+const GITHUB_TOKEN = process.env.GITHUB_TOKEN
+const GITHUB_OWNER = process.env.GITHUB_OWNER
+const GITHUB_REPO = process.env.GITHUB_REPO
+
+// ===== 定数定義 =====
 const FILE_PATH = '.env.submit'
 const secret_name = FILE_PATH.toUpperCase().replace(/\./g, '_') // _ENV_SUBMIT になる
-
 const octokit = new Octokit({ auth: GITHUB_TOKEN })
 
-async function main() {
+// ===== メイン処理 =====
+async function main(): Promise<void> {
+
+  // ===== 環境変数チェック =====
+  if (!GITHUB_TOKEN) {
+    console.error('❌ エラー: GITHUB_TOKEN が設定されていません。')
+    process.exit(1)
+  }
+
+  if (!GITHUB_OWNER) {
+    console.error('❌ エラー: GITHUB_OWNER が設定されていません。')
+    process.exit(1)
+  }
+
+  if (!GITHUB_REPO) {
+    console.error('❌ エラー: GITHUB_REPO が設定されていません。')
+    process.exit(1)
+  }
   if (!fs.existsSync(FILE_PATH)) {
     console.error(`❌ エラー: ファイル ${FILE_PATH} が見つかりません。`)
     process.exit(1)
@@ -42,12 +62,14 @@ async function main() {
   console.log(`✅ Secret "${secret_name}" を正常に更新しました。`)
 }
 
-main().catch((err) => {
+// ===== エラー処理 =====
+main().catch((err: unknown) => {
   console.error('❌ Error updating secrets:', err)
   process.exit(1)
 })
 
-async function encryptSecret(publicKey, secretValue) {
+// ===== 秘密情報の暗号化 =====
+async function encryptSecret(publicKey: string, secretValue: string): Promise<string> {
   await sodium.ready
   const binkey = sodium.from_base64(publicKey, sodium.base64_variants.ORIGINAL)
   const binsec = sodium.from_string(secretValue)
