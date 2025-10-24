@@ -1,51 +1,31 @@
 <script setup lang="ts">
-import { ContentScriptContext } from '#imports'
 
-const props = defineProps<{
-  ctx: ContentScriptContext
-}>()
-
-// localのOptionのobject
-const { state: userOption } = useUserOption()
-// localのWordのMap
-const { state: ignoreWord } = useIgnore('local:Word')
-// localのNameのMap
-const { state: ignoreName, upsert: upsertName } = useIgnore('local:Name')
-// sessionのNameのMap
-const { state: ignoreSessionName, upsert: upsertSessionName } = useIgnore('session:Name')
-// WordのMapをIgnoreWordReg[]の形にする, 引数のいずれかが変化したらComputed
-const { ignoreWordReg } = useIgnoreWordsReg(ignoreWord, userOption)
-
-// 通常の動画は1回読み込んだら完了
+/**
+ *
+ * 動画(ショート含む):
+ *  通常の動画: 通常の動画のコメント欄は同じouterをずっと使い回す設計になっている(挙動から確認)
+ *  ショート動画: スクロール毎にコメント欄が再生成される(ADが挟まるかどうかも関係する)
+ */
 const { init } = useCommentObserver(
-  'ytd-comments#comments #contents',
-  ignoreWordReg,
-  ignoreName,
-  ignoreSessionName,
-  userOption,
-  upsertName,
-  upsertSessionName,
-  props.ctx
+  'ytd-comments#comments #contents, ytd-shorts ytd-comments #contents'
 )
 init()
 
-// ショート動画 コメント欄が生成される度に取得し直す
-const { init: shortInit } = useCommentObserver(
-  'ytd-shorts ytd-comments #contents',
-  ignoreWordReg,
-  ignoreName,
-  ignoreSessionName,
-  userOption,
-  upsertName,
-  upsertSessionName,
-  props.ctx
+// コメントのソート変更あたりに関連したイベント、他のタイミングでも発動するがとりあえず問題ない。はず。
+document.addEventListener(
+  'yt-service-request-completed',
+  async () => {
+    await sleep(300)
+    init()
+  }
 )
-shortInit()
 
-document.addEventListener('yt-service-request-completed', async () => {
-  await sleep(300)
-  init()
-})
+/**
+ *
+ * ライブチャット: アーカイブも捕捉できるはず
+ */
+const { init: liveInit } = useChatObserver()
+liveInit()
 
 </script>
 <template>

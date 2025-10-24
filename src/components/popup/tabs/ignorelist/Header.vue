@@ -10,5 +10,3 @@ interface Props {
     <span>Management</span>
   </h2>
 </template>
-<style lang="scss" scoped>
-//</style>

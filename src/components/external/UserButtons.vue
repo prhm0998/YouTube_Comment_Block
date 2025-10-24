@@ -1,22 +1,16 @@
 <template>
   <div id="WXT-FIELD">
-    <button class="name-button" @click="handleUpsertName(name)">name
-      <span class="tooltip">{{ name }}</span>
+    <button class="name-button" @click="emits('click')">addId
     </button>
   </div>
 </template>
 
 <script setup lang="ts">
-const props = defineProps<{
-  upsertName: (name: string) => void
-  name: string
-  onIgnoreAdd: () => void
+
+const emits = defineEmits<{
+  (e: 'click'): void
 }>()
 
-const handleUpsertName = (name: string) => {
-  props.upsertName(name)
-  props.onIgnoreAdd()
-}
 </script>
 
 <style lang="scss" scoped>

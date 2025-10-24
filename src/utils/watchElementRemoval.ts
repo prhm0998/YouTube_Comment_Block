@@ -13,7 +13,6 @@ export const watchElementRemoval = (
 ) => {
   // 要素が既にドキュメントに存在しない場合
   if (!element.isConnected) {
-    console.warn('Element is not connected to the document, it might already be removed.')
     callback() // 即座にコールバックを呼び出す
     return
   }
