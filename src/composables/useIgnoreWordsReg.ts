@@ -27,5 +27,10 @@ export default function useIgnoreWordsReg(
         regExp: new RegExp(normalizedKey, option.value.useCaseInsensitive ? 'i' : ''),
       } as IgnoreWordReg
     }))
-  return { ignoreWordReg }
+
+  const isIgnoredWord = (text: string): boolean => {
+    const target = option.value.useNormalize ? normalizedWord(text) : text
+    return ignoreWordReg.value.some(({ regExp }) => regExp.test(target))
+  }
+  return { ignoreWordReg, isIgnoredWord }
 }

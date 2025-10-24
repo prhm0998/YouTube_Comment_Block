@@ -22,7 +22,7 @@ const options: UserOptionEntry[] = [
 <template>
   <div class="box-border flex flex-col h-[420px] w-[520px]">
     <Header />
-    <div v-if="state" class="flex flex-col flex-grow gap-2">
+    <div v-if="state" class="flex flex-col gap-2 grow">
       <CheckBox v-for="option in options" :id="option.key" :key="option.key" :label="option.label"
         :model-value="state[option.key]" @update:model-value="updateUserOption({ type: 'toggle', key: option.key })" />
     </div>

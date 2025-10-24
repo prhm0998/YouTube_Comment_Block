@@ -1,16 +1,10 @@
-import type { ContentScriptContext } from '#imports'
+import { waitElement } from '@1natsu/wait-element'
 
 export function useCommentObserver(
-  commentOuterSelector: string,
-  ignoreWordReg: Ref<IgnoreWordReg[]>,
-  ignoreName: Ref<Map<string, IgnoreBase>>,
-  ignoreSessionName: Ref<Map<string, IgnoreBase>>,
-  userOption: Ref<UserOption>,
-  upsertName: (name: string) => void,
-  upsertSessionName: (name: string) => void,
-  ctx: ContentScriptContext
+  commentOuterSelector: string
 ) {
   const { addObserver, resetObservers } = useObservers()
+  const { add: addComment, removeOuter } = useCommentManager()
   const currentScope = ref<ReturnType<typeof effectScope> | null>(null)
 
   async function init() {
@@ -26,17 +20,22 @@ export function useCommentObserver(
       // scopeの破棄に伴う処理 asyncを使う場合は非同期処理が始まる前に書く
       onScopeDispose(() => resetObservers())
 
-      const commentOuter: Element | null = await waitForElement(commentOuterSelector)
+      const commentOuter: Element | null = await waitElement(commentOuterSelector)
       if (!commentOuter || !(commentOuter instanceof HTMLElement)) return
 
-      const commentObserver: MutationObserver = useWatchComment(commentOuter, 'ytd-comment-thread-renderer', (comment) => {
-        processComment(comment)
-        observeReplies(comment)
-      })
+      const commentObserver: MutationObserver = useCommentWatch(
+        commentOuter,
+        'ytd-comment-thread-renderer',
+        (comment: HTMLElement) => {
+          addComment(commentOuter, comment)
+          observeReplies(comment)
+        }
+      )
       addObserver(commentObserver)
 
       // commentOuterが削除されたらinitを再実行する
       const cleanup = watchElementRemoval(commentOuter, () => {
+        removeOuter(commentOuter)
         cleanup?.()
         init()
       })
@@ -48,19 +47,16 @@ export function useCommentObserver(
     const replyOuter: HTMLElement | null = comment.querySelector<HTMLElement>('#replies #contents')
     if (!replyOuter) return
 
-    const replyObserver: MutationObserver = useWatchComment(replyOuter, 'ytd-comment-view-model', (reply) => {
-      processComment(reply)
+    const replyObserver: MutationObserver = useCommentWatch(replyOuter, 'ytd-comment-view-model', (reply: HTMLElement) => {
+      addComment(replyOuter, reply) //ここはcommentOuterとセットにしたほうがいいかも、要動作確認
     })
 
     addObserver(replyObserver)
-  }
 
-  function processComment(comment: HTMLElement) {
-    const newComment: YComment = getComment(comment)
-    useAddButton(newComment, ctx, init, upsertName)
-    const judgeResult: Ref<JudgeResult> = useJudgeComment(newComment, ignoreWordReg, ignoreName, ignoreSessionName, userOption)
-    useBannedProcess(newComment, judgeResult, userOption, upsertName, upsertSessionName)
+    const cleanup = watchElementRemoval(replyOuter, () => {
+      removeOuter(replyOuter)
+      cleanup?.()
+    })
   }
-
   return { init }
 }

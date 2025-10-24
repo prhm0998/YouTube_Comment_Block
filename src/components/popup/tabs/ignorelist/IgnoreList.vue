@@ -3,6 +3,7 @@ import dayjs from 'dayjs'
 import RemoveButton from '@/components/popup/tabs/ignorelist/RemoveButton.vue'
 import Header from '@/components/popup/tabs/ignorelist/Header.vue'
 import { TabType } from '@/components/popup/tabs/Tabs.vue'
+import isValidRegex from '@/utils/isValidRegex'
 
 interface Props {
   modelValue: TabType
@@ -14,6 +15,7 @@ const props = withDefaults(defineProps<Props>(), {
   edit: false,
 })
 const { state, insert, remove } = useIgnore(props.modelValue.key)
+
 const userInput = ref('')
 const now = dayjs()
 const validateUserInput = computed(() => {
@@ -21,19 +23,6 @@ const validateUserInput = computed(() => {
   if (props.regexp && !isValidRegex(userInput.value)) return false
   return true
 })
-const isValidRegex = (input: string) => {
-  try {
-    new RegExp(input)
-    return true
-  }
-  catch (e) {
-    return e instanceof SyntaxError
-      ? false
-      : (() => {
-        throw e
-      })()
-  }
-}
 const submitIgnore = () => {
   if (!validateUserInput.value) return
   insert(userInput.value)
@@ -75,7 +64,7 @@ const isLongId = (length: number) => {
 
     <!-- テーブルレイアウト -->
     <div>{{ }}</div>
-    <div class="flex-grow gutter-stable mr-2 overflow-y-auto">
+    <div class="grow gutter-stable mr-2 overflow-y-auto">
       <table class="table table-fixed table-pin-rows table-sm table-zebra w-full">
         <thead>
           <tr class="shadow">
