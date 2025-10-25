@@ -19,13 +19,13 @@ export default function useIgnoreWordsReg(
   ignoreWord: Readonly<Ref<ReadonlyMap<string, IgnoreBase>>>,
   option: Ref<UserOption>
 ) {
-  const ignoreWordReg = computed(() =>
+  const ignoreWordReg = computed((): IgnoreWordReg[] =>
     [...ignoreWord.value.keys()].map((key) => {
       const normalizedKey = option.value.useNormalize ? normalizedWord(key) : key
       return {
         key,
         regExp: new RegExp(normalizedKey, option.value.useCaseInsensitive ? 'i' : ''),
-      } as IgnoreWordReg
+      }
     }))
 
   const isIgnoredWord = (text: string): boolean => {

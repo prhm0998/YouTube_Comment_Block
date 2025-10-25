@@ -20,16 +20,17 @@ export function useCommentObserver(
       // scopeの破棄に伴う処理 asyncを使う場合は非同期処理が始まる前に書く
       onScopeDispose(() => resetObservers())
 
-      const commentOuter: Element | null = await waitElement(commentOuterSelector)
+      const commentOuter = await waitElement<HTMLElement>(commentOuterSelector)
       if (!commentOuter || !(commentOuter instanceof HTMLElement)) return
 
-      const commentObserver: MutationObserver = useCommentWatch(
+      const commentObserver: MutationObserver = useElementWatch(
         commentOuter,
         'ytd-comment-thread-renderer',
         (comment: HTMLElement) => {
           addComment(commentOuter, comment)
           observeReplies(comment)
-        }
+        },
+        { subtree: false }
       )
       addObserver(commentObserver)
 
@@ -47,9 +48,9 @@ export function useCommentObserver(
     const replyOuter: HTMLElement | null = comment.querySelector<HTMLElement>('#replies #contents')
     if (!replyOuter) return
 
-    const replyObserver: MutationObserver = useCommentWatch(replyOuter, 'ytd-comment-view-model', (reply: HTMLElement) => {
+    const replyObserver: MutationObserver = useElementWatch(replyOuter, 'ytd-comment-view-model', (reply: HTMLElement) => {
       addComment(replyOuter, reply) //ここはcommentOuterとセットにしたほうがいいかも、要動作確認
-    })
+    }, { subtree: false })
 
     addObserver(replyObserver)
 
