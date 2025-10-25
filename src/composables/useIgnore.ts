@@ -1,5 +1,6 @@
 import { useDebounceFn } from '@vueuse/core'
 import dayjs, { type Dayjs } from 'dayjs'
+import destr from 'destr'
 
 export interface IgnoreBase {
   id: string;
@@ -15,13 +16,11 @@ export interface IgnoreSnapshot extends Omit<IgnoreBase, 'submitAt' | 'lastFindA
 export default function (key: StorageItemKey) {
   const { state: storedJson } = useStoredValue(key, '[]')
   const memoryCache = ref<Map<IgnoreBase['id'], IgnoreBase>>(new Map<IgnoreBase['id'], IgnoreBase>())
-  // const isDirty = ref(false)
 
   // json to state logic
   const deserialize = (jsonString: string): Map<IgnoreBase['id'], IgnoreBase> => {
     try {
-      const parsed = JSON.parse(jsonString) as IgnoreSnapshot[]
-
+      const parsed = destr(jsonString) as IgnoreSnapshot[]
       return parsed.sort((a, b) => dayjs(a.lastFindISO).isBefore(dayjs(b.lastFindISO)) ? 1 : -1).reduce((acc, { id, submitISO, lastFindISO }) => {
         acc.set(id, {
           id,

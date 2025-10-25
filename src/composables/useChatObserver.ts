@@ -11,9 +11,9 @@ export default function useChatObserver() {
     currentScope.value.run(async () => {
       const chatOuter = await getLiveChatOuter()
       if (!chatOuter) return
-      const chatObserver = useChatWatch(chatOuter, 'yt-live-chat-text-message-renderer', (chat: HTMLElement) => {
+      const chatObserver = useElementWatch(chatOuter, 'yt-live-chat-text-message-renderer', (chat: HTMLElement) => {
         addChat(chatOuter, chat)
-      })
+      }, { subtree: false })
       addObserver(chatObserver)
       const cleanup = watchElementRemoval(chatOuter, () => {
         removeOuter(chatOuter)

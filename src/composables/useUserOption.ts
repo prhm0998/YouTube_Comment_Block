@@ -1,4 +1,6 @@
 import { useDebounceFn } from '@vueuse/core'
+import defu from 'defu'
+import destr from 'destr'
 
 export interface UserOption {
   enabled: boolean
@@ -31,11 +33,11 @@ export default function () {
   // json to state
   const deserialize = (jsonString: string): UserOption => {
     try {
-      const parsed = JSON.parse(jsonString) as Partial<UserOption>
+      const parsed = destr(jsonString) as Partial<UserOption>
       // 不要なプロパティを削除
       const filterd = filterProperties(parsed, defaultUserOption)
       // jsonにないプロパティはデフォルトから持ってくる
-      return applyDefaultProperties(filterd, defaultUserOption)
+      return defu(filterd, defaultUserOption)
     }
     catch {
       return getDefaultUserOption()
