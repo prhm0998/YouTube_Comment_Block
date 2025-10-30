@@ -1,4 +1,5 @@
-import { UseAsyncStateOptions, useAsyncState } from '@vueuse/core'
+import { useAsyncState } from '@vueuse/core'
+import type { UseAsyncStateOptions } from '@vueuse/core'
 
 export default function useStorageState<T>(
   key: StorageItemKey,

@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { IconRaiseHandOff, IconPenOff, IconGear } from '@iconify-prerendered/vue-pepicons-pop'
+
 import IgnoreList from '@/components/popup/tabs/ignorelist/IgnoreList.vue'
 import UserOption from '@/components/popup/tabs/useroption/UserOption.vue'
 
 export interface TabType {
-  key: StorageItemKey,
+  key: StorageItemKey
   name: 'Word' | 'Name' | 'Option'
 }
 
@@ -15,6 +16,7 @@ const tabs: TabType[] = [
 ]
 
 const activeTab = ref<TabType>(tabs[0])
+
 </script>
 
 <template>

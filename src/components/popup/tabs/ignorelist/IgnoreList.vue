@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import dayjs from 'dayjs'
-import RemoveButton from '@/components/popup/tabs/ignorelist/RemoveButton.vue'
+
 import Header from '@/components/popup/tabs/ignorelist/Header.vue'
-import { TabType } from '@/components/popup/tabs/Tabs.vue'
+import RemoveButton from '@/components/popup/tabs/ignorelist/RemoveButton.vue'
+import type { TabType } from '@/components/popup/tabs/Tabs.vue'
 import isValidRegex from '@/utils/isValidRegex'
 
 interface Props {

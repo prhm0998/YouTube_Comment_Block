@@ -1,8 +1,8 @@
 {
   "vueCompilerOptions": {
-    "plugins": [
-      "@vue/language-plugin-pug"
-    ]
+    //"plugins": [
+    //  "@vue/language-plugin-pug"
+    //]
   },
   "extends": "./.wxt/tsconfig.json",
 }

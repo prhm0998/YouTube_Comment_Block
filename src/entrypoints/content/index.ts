@@ -1,4 +1,5 @@
 import { createApp } from 'vue'
+
 import App from './App.vue'
 export default defineContentScript({
   matches: ['*://*.youtube.com/*'],

@@ -1,16 +1,17 @@
 import { useDebounceFn } from '@vueuse/core'
-import dayjs, { type Dayjs } from 'dayjs'
+import dayjs from 'dayjs'
+import type { Dayjs } from 'dayjs'
 import destr from 'destr'
 
 export interface IgnoreBase {
-  id: string;
-  submitAt: Dayjs;
-  lastFindAt: Dayjs;
+  id: string
+  submitAt: Dayjs
+  lastFindAt: Dayjs
 }
 
 export interface IgnoreSnapshot extends Omit<IgnoreBase, 'submitAt' | 'lastFindAt'> {
-  submitISO: string;
-  lastFindISO: string;
+  submitISO: string
+  lastFindISO: string
 }
 
 export default function (key: StorageItemKey) {

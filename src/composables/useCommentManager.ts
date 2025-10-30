@@ -1,5 +1,6 @@
-import UserButtons from '@/components/external/UserButtons.vue'
 import { isEqual } from 'ohash'
+
+import UserButtons from '@/components/external/UserButtons.vue'
 
 interface CommentState {
   el: HTMLElement
