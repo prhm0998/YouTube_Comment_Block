@@ -1,5 +1,6 @@
-import { Octokit } from '@octokit/rest'
 import fs from 'fs'
+
+import { Octokit } from '@octokit/rest'
 import dotenv from 'dotenv'
 import sodium from 'libsodium-wrappers'
 
