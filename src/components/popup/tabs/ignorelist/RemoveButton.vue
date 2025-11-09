@@ -9,7 +9,7 @@
 <script lang="ts" setup>
 
 interface Props {
-  id: string,
+  id: string
   remove: (id: string) => void
 }
 defineProps<Props>()

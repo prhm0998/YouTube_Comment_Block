@@ -1,9 +1,13 @@
+import { useStoredValue } from '@prhm0998/shared/composables'
+import { filterProperties } from '@prhm0998/shared/utils'
 import { useDebounceFn } from '@vueuse/core'
 import defu from 'defu'
 import destr from 'destr'
 
 export interface UserOption {
   enabled: boolean
+  enabledChat: boolean
+  useShowOnHover: boolean
   useNormalize: boolean
   useCaseInsensitive: boolean
   useWordSensitive: boolean
@@ -17,6 +21,8 @@ export type UserOptionEvent =
 
 const getDefaultUserOption = (): UserOption => ({
   enabled: true,
+  enabledChat: true,
+  useShowOnHover: true,
   useCaseInsensitive: true,
   useNormalize: true,
   useTemporaryWordSensitive: false,

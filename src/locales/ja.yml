@@ -8,7 +8,9 @@ dialog:
     submit: 登録
     delete: 取消
 userOption:
-  enabled: NG設定を有効化する
+  enabled: ビデオコメントを非表示にする
+  enabledChat: チャットを非表示にする
+  useShowOnHover: 非表示チャットをホバーで表示する
   useNormalize: ひらがな・カタカナを区別しない
   useCaseInsensitive: 大文字・小文字を区別しない
   useTemporaryWordSensitive: 禁止語句を使用したユーザーを一時的に非表示にします

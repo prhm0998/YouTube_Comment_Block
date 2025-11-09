@@ -1,5 +1,7 @@
+import { normalizedWord } from '@prhm0998/shared/utils'
+
 export interface IgnoreWordReg {
-  key: string,
+  key: string
   regExp: RegExp
 }
 

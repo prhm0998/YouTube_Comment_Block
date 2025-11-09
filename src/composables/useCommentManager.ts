@@ -44,7 +44,7 @@ export default function useCommentManager() {
     return parseNodes(body.childNodes)
   }
 
-  const parseNodes = (nodes: NodeList): { message: string; mentions: string[] } => {
+  const parseNodes = (nodes: NodeList): { message: string, mentions: string[] } => {
     const mentions = new Set<string>()
     let message = ''
     nodes.forEach((node) => {
@@ -66,7 +66,7 @@ export default function useCommentManager() {
   const add = (outer: HTMLElement, el: HTMLElement) => {
     let comments = allComments.get(outer)
     if (!comments) {
-      comments = new Map()
+      comments = reactive(new Map())
       allComments.set(outer, comments)
     }
     if (comments.has(el)) return
@@ -139,12 +139,12 @@ export default function useCommentManager() {
 
   const bannedProcess = (comment: CommentState, judge: CommentJudgeResult) => {
     const opt = userOption.value
-    if (!opt.enabled) return
 
     const { author, el } = comment
     const { ignored, byName, bySessionName, byWord, byMention } = judge
 
-    el.style.display = ignored ? 'none' : ''
+    const isHidden = userOption.value.enabled && ignored
+    el.style.display = isHidden ? 'none' : ''
 
     if (byName) upsertName(author)
     if (bySessionName) upsertSessionName(author)
@@ -175,16 +175,13 @@ export default function useCommentManager() {
     }
   })
 
-  // ========== 表示用 ==========
-
-  const visibleComments = computed(() => {
-    const result: CommentState[] = []
+  // optionが変わったら表示の再計算を強制するため、prevJudgeを消去する
+  watch(userOption, () => {
     for (const comments of allComments.values()) {
       for (const comment of comments.values()) {
-        if (!judgeComment(comment).ignored) result.push(comment)
+        comment.prevJudge = undefined
       }
     }
-    return result
   })
 
   // ========== 返却 ==========
@@ -193,6 +190,5 @@ export default function useCommentManager() {
     add,
     removeOuter,
     allComments,
-    visibleComments,
   }
 }

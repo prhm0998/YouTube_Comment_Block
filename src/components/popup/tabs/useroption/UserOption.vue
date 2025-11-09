@@ -1,15 +1,19 @@
 <script setup lang="ts">
 import CheckBox from '@/components/popup/tabs/useroption/CheckBox.vue'
 import Header from '@/components/popup/tabs/useroption/Header.vue'
-import useUserOption, { type UserOption } from '@/composables/useUserOption'
+import useUserOption from '@/composables/useUserOption'
+import type { UserOption } from '@/composables/useUserOption'
+
 const { state, updateUserOption } = useUserOption()
 
 export interface UserOptionEntry {
-  key: keyof UserOption,
+  key: keyof UserOption
   label: string
 }
 const options: UserOptionEntry[] = [
   { key: 'enabled', label: i18n.t('userOption.enabled') },
+  { key: 'enabledChat', label: i18n.t('userOption.enabledChat') },
+  { key: 'useShowOnHover', label: i18n.t('userOption.useShowOnHover') },
   { key: 'useNormalize', label: i18n.t('userOption.useNormalize') },
   { key: 'useCaseInsensitive', label: i18n.t('userOption.useCaseInsensitive') },
   { key: 'useTemporaryWordSensitive', label: i18n.t('userOption.useTemporaryWordSensitive') },

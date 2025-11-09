@@ -24,7 +24,7 @@ export default function useChatManager() {
   const { state: ignoreName, upsert: upsertName } = useIgnore('local:Name')
   const { state: ignoreSessionName, upsert: upsertSessionName } = useIgnore('session:Name')
   const { isIgnoredWord } = useIgnoreWordsReg(ignoreWord, userOption)
-  //const ctx = useContentScriptContext()
+  const hoverHandlers = new WeakMap<HTMLElement, { onEnter: () => void, onLeave: () => void }>()
 
   // ========== State生成 ==========
 
@@ -46,47 +46,12 @@ export default function useChatManager() {
 
     const state = generateState(el)
     chats.set(el, state)
-    //mountButton(el, state.author)
   }
 
   /** outer単位で削除（DOMからouterが削除されたときなど） */
   const removeOuter = (outer: HTMLElement) => {
     allChats.delete(outer)
   }
-
-  /**
-   *
-   * ========== 各要素にボタンを追加 ==========
-   *
-   * チャットにボタンを貼り付けるとTailwindCSSが効かないのでスタイルは直接書く
-   * ボタンが生えるのは見栄えが悪いので起動方法を考える
-   * このあたりが解決したら機能を追加する かも
-   *
-   *  */
-
-  //const mountButton = (el: HTMLElement, author: string) => {
-  //  const anchor = el.querySelector('#content') ?? null
-  //  if (!anchor) return
-  //
-  //  const ui = createIntegratedUi(ctx, {
-  //    position: 'inline',
-  //    anchor,
-  //    append: 'last',
-  //    onMount: (container) => {
-  //      const app = createApp(UserButtons, {
-  //        onClick: () => upsertName(author),
-  //      })
-  //      app.mount(container)
-  //      return app
-  //    },
-  //    onRemove: (app) => {
-  //      if (app) {
-  //        app.unmount()
-  //      }
-  //    },
-  //  })
-  //  ui.mount()
-  //}
 
   // ========== 判定 ==========
 
@@ -115,18 +80,58 @@ export default function useChatManager() {
 
   const bannedProcess = (chat: ChatState, judge: ChatJudgeResult) => {
     const opt = userOption.value
-    if (!opt.enabled) return
 
     const { author, el } = chat
     const { ignored, byName, bySessionName, byWord } = judge
 
-    el.style.display = ignored ? 'none' : ''
+    commentStyling(el, ignored)
 
     if (byName) upsertName(author)
     if (bySessionName) upsertSessionName(author)
 
     if (byWord) {
       handleSensitiveUpsert(author, opt.useWordSensitive, opt.useTemporaryWordSensitive)
+    }
+  }
+
+  const commentStyling = (el: HTMLElement, ignored: boolean) => {
+    if (ignored && userOption.value.enabledChat) {
+      if (userOption.value.useShowOnHover) {
+        el.style.display = ''
+        el.style.opacity = '0.05'
+      }
+      else {
+        el.style.display = 'none'
+        el.style.opacity = ''
+      }
+
+      if (!hoverHandlers.has(el)) {
+        const onEnter = () => {
+          if (userOption.value.useShowOnHover) {
+            el.style.opacity = '1'
+            el.style.display = ''
+          }
+        }
+        const onLeave = () => {
+          if (userOption.value.useShowOnHover) {
+            el.style.opacity = '0.05'
+            el.style.display = ''
+          }
+        }
+        el.addEventListener('mouseover', () => {
+          onEnter()
+        })
+        el.addEventListener('mouseout', () => {
+          onLeave()
+        })
+        hoverHandlers.set(el, { onEnter, onLeave })
+      }
+    }
+    else {
+      // ===== 通常表示状態 =====
+      el.style.opacity = ''
+      el.style.transition = ''
+      el.style.display = ''
     }
   }
 
@@ -146,21 +151,18 @@ export default function useChatManager() {
     }
   })
 
-  /** 表示用: ignored=false のチャットのみ */
-  const visibleChats = computed(() => {
-    const result: ChatState[] = []
+  // optionが変わったら表示の再計算を強制するため、prevJudgeを消去する
+  watch(userOption, () => {
     for (const chats of allChats.values()) {
       for (const chat of chats.values()) {
-        if (!judgeChat(chat).ignored) result.push(chat)
+        chat.prevJudge = undefined
       }
     }
-    return result
   })
 
   return {
     add,
     removeOuter,
     allChats,
-    visibleChats,
   }
 }

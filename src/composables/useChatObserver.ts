@@ -1,4 +1,5 @@
 import { waitElement } from '@1natsu/wait-element'
+import { watchElementRemoval } from '@prhm0998/shared/utils'
 
 export default function useChatObserver() {
   const { addObserver, resetObservers } = useObservers()
