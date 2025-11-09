@@ -8,7 +8,9 @@ dialog:
     submit: Submit
     delete: Delete
 userOption:
-  enabled: Enable Hide Settings
+  enabled: Hide video comments
+  enabledChat: Hide chat messages
+  useShowOnHover: Show hidden chats on hover
   useNormalize: Ignore differences between Hiragana and Katakana
   useCaseInsensitive: Ignore differences between uppercase and lowercase letters
   useTemporaryWordSensitive: Temporarily hide users who use ignore words

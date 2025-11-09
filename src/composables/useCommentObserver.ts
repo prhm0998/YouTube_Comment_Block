@@ -1,4 +1,5 @@
 import { waitElement } from '@1natsu/wait-element'
+import { watchElementRemoval } from '@prhm0998/shared/utils'
 
 export function useCommentObserver(
   commentOuterSelector: string
@@ -24,13 +25,10 @@ export function useCommentObserver(
       if (!commentOuter || !(commentOuter instanceof HTMLElement)) return
 
       const commentObserver: MutationObserver = useElementWatch(
-        commentOuter,
-        'ytd-comment-thread-renderer',
-        (comment: HTMLElement) => {
+        commentOuter, 'ytd-comment-thread-renderer', (comment: HTMLElement) => {
           addComment(commentOuter, comment)
           observeReplies(comment)
-        },
-        { subtree: false }
+        }, { subtree: false }
       )
       addObserver(commentObserver)
 

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { sleep } from '@prhm0998/shared/utils'
 
 /**
  *
@@ -13,8 +14,7 @@ init()
 
 // コメントのソート変更あたりに関連したイベント、他のタイミングでも発動するがとりあえず問題ない。はず。
 document.addEventListener(
-  'yt-service-request-completed',
-  async () => {
+  'yt-service-request-completed', async () => {
     await sleep(300)
     init()
   }

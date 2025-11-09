@@ -1,10 +1,10 @@
 <script setup lang="ts">
+import { isValidRegex } from '@prhm0998/shared/utils'
 import dayjs from 'dayjs'
 
 import Header from '@/components/popup/tabs/ignorelist/Header.vue'
 import RemoveButton from '@/components/popup/tabs/ignorelist/RemoveButton.vue'
 import type { TabType } from '@/components/popup/tabs/Tabs.vue'
-import isValidRegex from '@/utils/isValidRegex'
 
 interface Props {
   modelValue: TabType
