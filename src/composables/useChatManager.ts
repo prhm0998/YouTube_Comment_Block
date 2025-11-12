@@ -16,7 +16,7 @@ interface ChatJudgeResult {
 
 export default function useChatManager() {
   /** outerごとにコメントを管理 */
-  const allChats = reactive(new Map<HTMLElement, Map<HTMLElement, ChatState>>())
+  const chats = reactive(new Map<HTMLElement, ChatState>())
 
   /** 各種 state とユーティリティ */
   const { state: userOption } = useUserOption()
@@ -36,21 +36,15 @@ export default function useChatManager() {
 
   // ========== 登録・削除 ==========
 
-  const add = (outer: HTMLElement, el: HTMLElement) => {
-    let chats = allChats.get(outer)
-    if (!chats) {
-      chats = reactive(new Map())
-      allChats.set(outer, chats)
-    }
+  const add = (el: HTMLElement) => {
     if (chats.has(el)) return // 既に登録済みならスキップ
 
     const state = generateState(el)
     chats.set(el, state)
   }
 
-  /** outer単位で削除（DOMからouterが削除されたときなど） */
-  const removeOuter = (outer: HTMLElement) => {
-    allChats.delete(outer)
+  const remove = (el: HTMLElement) => {
+    chats.delete(el)
   }
 
   // ========== 判定 ==========
@@ -144,25 +138,21 @@ export default function useChatManager() {
 
   // ========== 監視処理 ==========
   watchEffect(() => {
-    for (const chats of allChats.values()) {
-      for (const chat of chats.values()) {
-        processChat(chat)
-      }
+    for (const chat of chats.values()) {
+      processChat(chat)
     }
   })
 
   // optionが変わったら表示の再計算を強制するため、prevJudgeを消去する
   watch(userOption, () => {
-    for (const chats of allChats.values()) {
-      for (const chat of chats.values()) {
-        chat.prevJudge = undefined
-      }
+    for (const chat of chats.values()) {
+      chat.prevJudge = undefined
     }
   })
 
   return {
     add,
-    removeOuter,
-    allChats,
+    remove,
+    allChats: chats,
   }
 }

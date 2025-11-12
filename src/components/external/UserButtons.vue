@@ -1,11 +1,17 @@
 <template>
   <div id="WXT-FIELD">
-    <button class="name-button" @click="emits('click')">addId
+    <button class="name-button" @click="emits('click')">Add Id
+      <span class="tooltip">{{ name }}</span>
     </button>
   </div>
 </template>
 
 <script setup lang="ts">
+
+interface Props {
+  name: string
+}
+defineProps<Props>()
 
 const emits = defineEmits<{
   (e: 'click'): void

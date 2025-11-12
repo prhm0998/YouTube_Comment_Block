@@ -8,6 +8,7 @@ interface CommentState {
   message: string
   mentions: string[]
   prevJudge?: CommentJudgeResult
+  app?: ReturnType<typeof createApp> | null
 }
 
 interface CommentJudgeResult {
@@ -19,8 +20,7 @@ interface CommentJudgeResult {
 }
 
 export default function useCommentManager() {
-  /** outerごとにコメントを管理 */
-  const allComments = reactive(new Map<HTMLElement, Map<HTMLElement, CommentState>>())
+  const comments = reactive(new Map<HTMLElement, CommentState>())
 
   /** 各種 state とユーティリティ */
   const { state: userOption } = useUserOption()
@@ -63,22 +63,26 @@ export default function useCommentManager() {
 
   // ========== 登録・削除 ==========
 
-  const add = (outer: HTMLElement, el: HTMLElement) => {
-    let comments = allComments.get(outer)
-    if (!comments) {
-      comments = reactive(new Map())
-      allComments.set(outer, comments)
+  const add = (el: HTMLElement) => {
+    // すでに登録済みの場合は削除して再登録
+    if (comments.has(el)) {
+      const prev = comments.get(el)!
+      if (prev.app) {
+        prev.app.unmount()
+        prev.app = undefined
+      }
+      comments.delete(el)
     }
-    if (comments.has(el)) return
 
     const state = generateState(el)
     comments.set(el, state)
 
-    mountButton(el, state.author)
+    // マウントして app を保持
+    state.app = mountButton(el, state.author)
   }
 
-  const removeOuter = (outer: HTMLElement) => {
-    allComments.delete(outer)
+  const remove = (outer: HTMLElement) => {
+    comments.delete(outer)
   }
 
   // ========== 各要素にボタンを追加 ==========
@@ -87,16 +91,19 @@ export default function useCommentManager() {
     const anchor = el.querySelector('#body.ytd-comment-view-model ytd-comment-engagement-bar #toolbar') ?? null
     if (!anchor) return
 
+    let appInstance: ReturnType<typeof createApp> | null = null
+
     const ui = createIntegratedUi(ctx, {
       position: 'inline',
       anchor,
       append: 'last',
       onMount: (container) => {
-        const app = createApp(UserButtons, {
+        appInstance = createApp(UserButtons, {
+          name: author,
           onClick: () => upsertName(author),
         })
-        app.mount(container)
-        return app
+        appInstance.mount(container)
+        return appInstance
       },
       onRemove: (app) => {
         if (app) {
@@ -105,6 +112,8 @@ export default function useCommentManager() {
       },
     })
     ui.mount()
+
+    return appInstance
   }
 
   // ========== 判定 ==========
@@ -168,19 +177,15 @@ export default function useCommentManager() {
   // ========== 監視処理 ==========
 
   watchEffect(() => {
-    for (const comments of allComments.values()) {
-      for (const comment of comments.values()) {
-        processComment(comment)
-      }
+    for (const comment of comments.values()) {
+      processComment(comment)
     }
   })
 
   // optionが変わったら表示の再計算を強制するため、prevJudgeを消去する
   watch(userOption, () => {
-    for (const comments of allComments.values()) {
-      for (const comment of comments.values()) {
-        comment.prevJudge = undefined
-      }
+    for (const comment of comments.values()) {
+      comment.prevJudge = undefined
     }
   })
 
@@ -188,7 +193,7 @@ export default function useCommentManager() {
 
   return {
     add,
-    removeOuter,
-    allComments,
+    remove,
+    allComments: comments,
   }
 }
