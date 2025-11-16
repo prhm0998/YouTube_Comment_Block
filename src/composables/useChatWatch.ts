@@ -1,9 +1,6 @@
 import { waitElement } from '@1natsu/wait-element'
 import type { DetectorResultType } from '@1natsu/wait-element/detectors'
-import { watchElementRemoval } from '@prhm0998/shared/utils'
-
-import { waitElementCycle } from '@/utils/waitElementCycle'
-import type { WaitElementCycleCallbacks } from '@/utils/waitElementCycle'
+import { waitElementCycle, watchElement, watchElementRemoval, type WaitElementCycleCallbacks } from '@prhm0998/shared/utils'
 
 // チャット欄の生成を監視する
 export function useChatWatch() {

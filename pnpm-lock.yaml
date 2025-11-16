@@ -18,8 +18,8 @@ importers:
         specifier: ^0.28.1722795431
         version: 0.28.1754900467(vue@3.5.22(typescript@5.6.3))
       '@prhm0998/shared':
-        specifier: github:prhm0998/shared#v1.0.5
-        version: https://codeload.github.com/prhm0998/shared/tar.gz/e543179a477f070c9850e5f8907981b561e2c2bf(pinia@3.0.4(typescript@5.6.3)(vue@3.5.22(typescript@5.6.3)))(vue@3.5.22(typescript@5.6.3))
+        specifier: github:prhm0998/shared#v1.0.7
+        version: https://codeload.github.com/prhm0998/shared/tar.gz/31ac4d6534522280604f419e1fe2d33a95a4c15b(pinia@3.0.4(typescript@5.6.3)(vue@3.5.22(typescript@5.6.3)))(vue@3.5.22(typescript@5.6.3))
       '@tailwindcss/vite':
         specifier: ^4.1.13
         version: 4.1.16(vite@7.1.12(@types/node@24.9.2)(jiti@2.6.1)(lightningcss@1.30.2)(sass@1.93.2))
@@ -694,9 +694,9 @@ packages:
     resolution: {integrity: sha512-c83qWb22rNRuB0UaVCI0uRPNRr8Z0FWnEIvT47jiHAmOIUHbBOg5XvV7pM5x+rKn9HRpjxquDbXYSXr3fAKFcw==}
     engines: {node: '>=12'}
 
-  '@prhm0998/shared@https://codeload.github.com/prhm0998/shared/tar.gz/e543179a477f070c9850e5f8907981b561e2c2bf':
-    resolution: {tarball: https://codeload.github.com/prhm0998/shared/tar.gz/e543179a477f070c9850e5f8907981b561e2c2bf}
-    version: 1.0.5
+  '@prhm0998/shared@https://codeload.github.com/prhm0998/shared/tar.gz/31ac4d6534522280604f419e1fe2d33a95a4c15b':
+    resolution: {tarball: https://codeload.github.com/prhm0998/shared/tar.gz/31ac4d6534522280604f419e1fe2d33a95a4c15b}
+    version: 1.0.7
     peerDependencies:
       pinia: ^3.0.4
       vue: ^3.5.22
@@ -3711,8 +3711,9 @@ snapshots:
       '@pnpm/network.ca-file': 1.0.2
       config-chain: 1.1.13
 
-  '@prhm0998/shared@https://codeload.github.com/prhm0998/shared/tar.gz/e543179a477f070c9850e5f8907981b561e2c2bf(pinia@3.0.4(typescript@5.6.3)(vue@3.5.22(typescript@5.6.3)))(vue@3.5.22(typescript@5.6.3))':
+  '@prhm0998/shared@https://codeload.github.com/prhm0998/shared/tar.gz/31ac4d6534522280604f419e1fe2d33a95a4c15b(pinia@3.0.4(typescript@5.6.3)(vue@3.5.22(typescript@5.6.3)))(vue@3.5.22(typescript@5.6.3))':
     dependencies:
+      '@1natsu/wait-element': 4.1.2
       browser-extension-url-match: 1.2.0
       defu: 6.1.4
       pinia: 3.0.4(typescript@5.6.3)(vue@3.5.22(typescript@5.6.3))
