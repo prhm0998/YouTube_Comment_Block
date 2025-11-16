@@ -24,7 +24,7 @@
   "dependencies": {
     "@1natsu/wait-element": "^4.1.2",
     "@iconify-prerendered/vue-pepicons-pop": "^0.28.1722795431",
-    "@prhm0998/shared": "github:prhm0998/shared#v1.0.7",
+    "@prhm0998/shared": "github:prhm0998/shared#v1.0.17",
     "@tailwindcss/vite": "^4.1.13",
     "@vueuse/core": "^12.5.0",
     "@wxt-dev/auto-icons": "^1.1.0",

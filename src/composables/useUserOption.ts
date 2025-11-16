@@ -1,7 +1,6 @@
 import { useStoredValue } from '@prhm0998/shared/composables'
-import { filterProperties } from '@prhm0998/shared/utils'
+import { applyDefaultProperties, filterProperties } from '@prhm0998/shared/utils'
 import { useDebounceFn } from '@vueuse/core'
-import defu from 'defu'
 import destr from 'destr'
 
 export interface UserOption {
@@ -43,7 +42,7 @@ export default function () {
       // 不要なプロパティを削除
       const filterd = filterProperties(parsed, defaultUserOption)
       // jsonにないプロパティはデフォルトから持ってくる
-      return defu(filterd, defaultUserOption)
+      return applyDefaultProperties(defaultUserOption, filterd)
     }
     catch {
       return getDefaultUserOption()
