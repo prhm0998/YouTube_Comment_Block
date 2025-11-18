@@ -89,44 +89,48 @@ export default function useChatManager() {
   }
 
   const commentStyling = (el: HTMLElement, ignored: boolean) => {
-    if (ignored && userOption.value.enabledChat) {
-      if (userOption.value.useShowOnHover) {
+
+    // --- 1. 既存 hover イベントを必ず解除
+    const existing = hoverHandlers.get(el)
+    if (existing) {
+      el.removeEventListener('mouseover', existing.onEnter)
+      el.removeEventListener('mouseout', existing.onLeave)
+      hoverHandlers.delete(el)
+    }
+
+    // --- 2. ignored ではない場合
+    if (!ignored || !userOption.value.enabledChat) {
+      el.style.display = ''
+      el.style.opacity = ''
+    }
+
+    // --- 3. ignored かつ enabled = true の場合の処理 ---
+
+    // hover 表示が有効の場合
+    if (userOption.value.useShowOnHover) {
+      el.style.display = ''
+      el.style.opacity = '0.05'
+
+      const onEnter = () => {
+        el.style.display = ''
+        el.style.opacity = '1'
+      }
+
+      const onLeave = () => {
         el.style.display = ''
         el.style.opacity = '0.05'
       }
-      else {
-        el.style.display = 'none'
-        el.style.opacity = ''
-      }
 
-      if (!hoverHandlers.has(el)) {
-        const onEnter = () => {
-          if (userOption.value.useShowOnHover) {
-            el.style.opacity = '1'
-            el.style.display = ''
-          }
-        }
-        const onLeave = () => {
-          if (userOption.value.useShowOnHover) {
-            el.style.opacity = '0.05'
-            el.style.display = ''
-          }
-        }
-        el.addEventListener('mouseover', () => {
-          onEnter()
-        })
-        el.addEventListener('mouseout', () => {
-          onLeave()
-        })
-        hoverHandlers.set(el, { onEnter, onLeave })
-      }
+      el.addEventListener('mouseover', onEnter)
+      el.addEventListener('mouseout', onLeave)
+      hoverHandlers.set(el, { onEnter, onLeave })
+
+      return
     }
-    else {
-      // ===== 通常表示状態 =====
-      el.style.opacity = ''
-      el.style.transition = ''
-      el.style.display = ''
-    }
+
+    // hover 表示を使わない場合（完全非表示）
+    el.style.display = 'none'
+    el.style.opacity = ''
   }
 
   const processChat = (chat: ChatState) => {
