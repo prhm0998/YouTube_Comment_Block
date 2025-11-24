@@ -102,6 +102,7 @@ export default function useChatManager() {
     if (!ignored || !userOption.value.enabledChat) {
       el.style.display = ''
       el.style.opacity = ''
+      return
     }
 
     // --- 3. ignored かつ enabled = true の場合の処理 ---
